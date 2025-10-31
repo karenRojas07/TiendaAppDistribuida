@@ -5,7 +5,7 @@ const OrderModel = sequelize.define('Order', {
   id: { type: DataTypes.BIGINT.UNSIGNED, primaryKey: true, autoIncrement: true },
   product_id: { type: DataTypes.BIGINT.UNSIGNED, allowNull: false },
   quantity: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false },
-  total: { type: DataTypes.DECIMAL(12, 2).UNSIGNED, allowNull: false },
+  total: { type: DataTypes.DECIMAL(12, 2), allowNull: false },
   created_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
 }, {
   timestamps: true,
