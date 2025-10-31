@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: tienda-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tiendaApp
+    ports:
+      - "3007:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - tienda-net
+
+  users:
+    build: ./users
+    container_name: tienda-users
+    restart: always
+    ports:
+      - "3004:3004"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      PORT: 3004
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: tiendaApp
+      DB_USER: root
+      DB_PASS: root
+    networks:
+      - tienda-net
+
+  orders:
+    build: ./orders
+    container_name: tienda-orders
+    restart: always
+    ports:
+      - "3005:3005"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      PORT: 3005
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: tiendaApp
+      DB_USER: root
+      DB_PASS: root
+    networks:
+      - tienda-net
+
+  products:
+    build: ./products
+    container_name: tienda-products
+    restart: always
+    ports:
+      - "3006:3006"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      PORT: 3006
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: tiendaApp
+      DB_USER: root
+      DB_PASS: root
+    networks:
+      - tienda-net
+      
+  nginx:
+    build: ./nginx
+    container_name: tienda-nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - users
+      - orders
+    networks:
+      - tienda-net
+
+
+volumes:
+  mysql-data:
+
+networks:
+  tienda-net:
+    driver: bridge
