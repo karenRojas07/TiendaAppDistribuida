@@ -6,8 +6,18 @@ async function registerUser({ name, email, password }) {
   return await User.create({ name, email, password: hashedPassword });
 }
 
-async function loginUser(name, email) {
-  return await User.findOne({ where: { name, email } });
+async function loginUser(email, password) {
+  const user = await User.findOne({ where: { email } });
+  if (!user) return null;
+
+  const valid = await bcrypt.compare(password, user.password);
+  if (!valid) return null;
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email
+  };
 }
 
 async function getAllUsers() {

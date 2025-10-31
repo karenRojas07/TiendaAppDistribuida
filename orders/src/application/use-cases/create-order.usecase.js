@@ -13,7 +13,7 @@ class CreateOrderUseCase {
     // 🔍 Obtener el producto
     let product;
     try {
-      const response = await axios.get(`http://tienda-products:3006/api/products/${product_id}`);
+      const response = await axios.get(`http://tienda-products/api/products/${product_id}`);
       product = response.data;
       if (!product || product.id !== product_id) {
         throw new Error('El producto no existe');

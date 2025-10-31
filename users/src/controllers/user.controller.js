@@ -12,11 +12,11 @@ async function register(req, res) {
 
 async function login(req, res) {
   try {
-    const user = await loginUser(req.body.name, req.body.email);
+    const user = await loginUser(req.body.email, req.body.password);
     if (!user) return res.status(401).json({ error: 'Credenciales inválidas' });
     res.status(200).json({ message: 'Login exitoso', user });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: 'error al iniciar sesion: ',error: err.message });
   }
 }
 
